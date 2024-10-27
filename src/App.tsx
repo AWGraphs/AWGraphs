@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import GraphView from './GraphView.tsx'
 import './App.css'
 
 function App() {
   return (
     <div className="app">
-      <GraphView className="graphview"/>
+      <GraphView className="graphview" />
     </div>
   )
 }
