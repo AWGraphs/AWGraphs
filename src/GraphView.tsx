@@ -2,55 +2,45 @@ import { useState } from 'react'
 import Node from './Node.tsx'
 import './GraphView.css'
 
-let id_counter = 0;
-function getId() {
-  id_counter += 1;
-  return id_counter - 1;
+let nextId = 0;
+
+interface NodeInfo {
+  id: number,
+  selected: boolean,
+  position: { x: number, y: number }
 }
 
-function GraphView({ className }) {
-  const [nodes, setNodes] = useState([]);
-  const [idCounter, setIdCounter] = useState();
+function GraphView({ className }: { className: string }) {
+  const [nodes, setNodes] = useState<NodeInfo[]>([]);
 
-  function setSelected(id) {
-    setNodes((nodes) => {
-      const newNodes = nodes.map((node) => {
-        console.log(node.key, id, node.key == id);
-        return {
-          ...node,
-          selected: node.key == id,
-        };
-      });
-      return newNodes;
-    });
-  }
-
-  function getSelected(nodes) {
-    nodes.forEach((node) => {
-      if (node.selected) {
-        return node.key;
-      }
-    });
-    return undefined;
-  }
-
-  function handleClick(e) {
-    if(getSelected(nodes)) {
-      setSelected(undefined);
+  function onClick(e: React.MouseEvent) {
+    const enabledNodes = nodes.filter((v) => v.selected);
+    if (enabledNodes.length > 0) {
+      setNodes((nodes) => nodes.map((v) => { v.selected = false; return v; }))
     } else {
-      const id = getId();
-      setNodes((nodes) => [
-        ...nodes,
-        (
-          <Node key={id} selected={false} pos={{ x: e.clientX, y:e.clientY }} setSelected={()=>{setSelected(id)}}/>
-        ),
-      ]);
+      const id = nextId++;
+      const new_node = { id: id, selected: false, position: { x: e.clientX, y: e.clientY } };
+      setNodes(nodes => [...nodes, new_node]);
     }
   }
-    
+
+  function onClickNode(id: number, event: React.MouseEvent) {
+    event.stopPropagation();
+    setNodes((nodes) => nodes.map((v) => {
+      if (v.id == id) {
+        v.selected = true;
+      } else {
+        v.selected = false;
+      }
+      return v;
+    }));
+  }
+
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={handleClick}>
-      {nodes}
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick}>
+      {nodes.map((node) => (
+        <Node key={node.id} selected={node.selected} onClick={(e) => onClickNode(node.id, e)} pos={node.position} />
+      ))}
     </svg>
   )
 }

@@ -1,18 +1,12 @@
-import { useState } from 'react'
 import './Node.css'
 
-function Node({ selected, setSelected, pos }) {
-  function handleClick(e) {
-    e.stopPropagation();
-    setSelected();
-  }
-
+function Node({ selected, onClick, pos }: { selected: boolean, onClick: (e: React.MouseEvent) => void, pos: { x: number, y: number } }) {
   return (
     <circle
       className={"node" + " " + (selected ? "selected" : "")}
       cx={pos.x} cy={pos.y}
       r="10"
-      onClick={handleClick}
+      onClick={onClick}
       fill={selected ? "red" : "black"}>
     </circle>
   )
