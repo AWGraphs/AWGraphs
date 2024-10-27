@@ -1,5 +1,3 @@
-import './Node.css'
-
 function Node({ selected, onClick, pos }: { selected: boolean, onClick: (e: React.MouseEvent) => void, pos: { x: number, y: number } }) {
   return (
     <circle
