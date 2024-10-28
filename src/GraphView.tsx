@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Node from './Graph/Node.tsx'
 import './GraphView.css'
 import Edge from './Graph/Edge.tsx';
+import * as algs from './algs';
 
 let nextNodeId = 0;
 let nextEdgeId = 0;
@@ -75,6 +76,8 @@ function GraphView({ className }: { className: string }) {
       return edge;
     }));
   }
+
+  console.log(algs.hierholzer.run(new algs.Graph(nodes, edges)));
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick}>
