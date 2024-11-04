@@ -7,13 +7,13 @@ import * as algs from './algs';
 let nextNodeId = 0;
 let nextEdgeId = 0;
 
-interface NodeInfo {
+export interface NodeInfo {
   id: number,
   selected: boolean,
   position: { x: number, y: number }
 }
 
-interface EdgeInfo {
+export interface EdgeInfo {
   id: number,
   selected: boolean,
   from_id: number,

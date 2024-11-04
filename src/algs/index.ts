@@ -1,27 +1,27 @@
 export * as hierholzer from './hierholzer';
 
-import GraphView from '../GraphView';
+import * as GraphView from '../GraphView';
 
-export class Node {
-    id: number;
+export interface Node {
+  id: number;
 }
 
-export class EdgeInfo {
-    id: number;
-    from_id: number;
-    to_id: number;
+export interface Edge {
+  id: number;
+  from_id: number;
+  to_id: number;
 }
 
 export class Graph {
   nodes: Node[];
   edges: Edge[];
 
-  constructor(nodes: GraphView.NodeInfo, edges: GraphView.EdgeInfo) {
+  constructor(nodes: GraphView.NodeInfo[], edges: GraphView.EdgeInfo[]) {
     this.nodes = nodes;
     this.edges = edges;
   }
 
-  degree(node: Node): int {
+  degree(node: Node): number {
     let res = 0;
     this.edges.forEach((edge: Edge) => {
       if (edge.from_id == node.id) res++;
@@ -36,18 +36,23 @@ export class Graph {
       if (edge.from_id == node.id) ids.push(edge.to_id);
       if (edge.to_id == node.id) ids.push(edge.from_id);
     })
-    
+
     const res: Node[] = [];
     ids.forEach((id: number, pos: number) => {
       if (ids.indexOf(id) == pos) {
-        res.push(this.nodes.find((n) => n.id == id));
+        const node = this.nodes.find((n) => n.id == id);
+        if (node) {
+          res.push(node);
+        } else {
+          console.error("Could not find node with id: ", id);
+        }
       }
     });
 
     return res;
   }
 
-  dfsInner(node: Node, func, visited: Node[], path: Node[]) {
+  dfsInner(node: Node, func: (node: Node, path: Node[]) => void, visited: Node[], path: Node[]) {
     if (visited.includes(node)) return;
     visited.push(node);
 
@@ -58,7 +63,7 @@ export class Graph {
     func(node, [...path, node]);
   }
 
-  dfs(start: Node, func) {
+  dfs(start: Node, func: () => void) {
     this.dfsInner(start, func, [], []);
   }
 }
